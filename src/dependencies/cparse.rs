@@ -41,7 +41,7 @@ impl FileType {
 }
 
 static INCLUDE_REGEX: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r##"^\s*#include\s*(["<])([^">]*)[">]"##).unwrap());
+    LazyLock::new(|| Regex::new(r##"^\s*#\s*include\s*(["<])([^">]*)[">]"##).unwrap());
 
 /// Given a C-like source, try to resolve includes.
 ///
