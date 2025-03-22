@@ -131,10 +131,10 @@ where
             }
         };
 
-        if FileType::of(&path) == FileType::Unknown {
-            trace!("Skipping non-source: {:?}", path);
-            continue;
-        }
+        // if FileType::of(&path) == FileType::Unknown {
+        //     trace!("Skipping non-source: {:?}", path);
+        //     continue;
+        // }
 
         // prepare data to move into sub-task
         let includes = includes.clone();
