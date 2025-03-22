@@ -33,8 +33,8 @@ impl FileType {
             .unwrap_or("")
             .to_lowercase();
         match ext.as_str() {
-            "h" | "hpp" => FileType::Header,
-            "c" | "cpp" | "cc" | "cxx" => FileType::Source,
+            "h" | "hpp" | "hh" | "hxx" | "h++" => FileType::Header,
+            "c" | "cpp" | "cc" | "cxx" | "c++" => FileType::Source,
             _ => FileType::Unknown,
         }
     }
