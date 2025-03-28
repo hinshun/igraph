@@ -22,6 +22,7 @@ fn try_resolve(head: &Path, tail: &Path) -> Option<PathBuf> {
 pub enum FileType {
     Header,
     Source,
+    Text,
     Unknown,
 }
 
@@ -35,6 +36,7 @@ impl FileType {
         match ext.as_str() {
             "h" | "hpp" | "hh" | "hxx" | "h++" => FileType::Header,
             "c" | "cpp" | "cc" | "cxx" | "c++" => FileType::Source,
+            "md" => FileType::Text,
             _ => FileType::Unknown,
         }
     }
@@ -60,11 +62,13 @@ pub fn extract_includes(path: &PathBuf, include_dirs: &[PathBuf]) -> Result<Vec<
     let lines = reader.lines();
 
     for line in lines {
-        let line = line.map_err(|source| Error::FileIOError {
-            source,
-            path: path.clone(),
-            message: "line read",
-        })?;
+        let line = match line {
+            Ok(l) => l,
+            Err(_) => {
+                // Usually this means the file isn't UTF-8 and we can skip.
+                return Ok(result);
+            }
+        };
 
         if let Some(captures) = INCLUDE_REGEX.captures(&line) {
             let inc_type = captures.get(1).unwrap().as_str();
