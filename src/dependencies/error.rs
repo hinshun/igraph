@@ -31,8 +31,8 @@ pub enum Error {
 
     // Unfortunately, in most cases where this error can occur the path is no
     // longer available to avoid unnecessary cloning in the hot path.
-    #[error("Required file not found")]
-    FileNotFound,
+    #[error("Required file not found {}", path.to_string_lossy())]
+    FileNotFound { path: PathBuf },
 
     #[error("Internal error")]
     Internal { message: String },

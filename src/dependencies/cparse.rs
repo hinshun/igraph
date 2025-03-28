@@ -119,11 +119,13 @@ where
 
     for entry in paths {
         let path = match entry {
-            Ok(value) => canonicalize_cached(value)
+            Ok(value) => canonicalize_cached(value.clone())
                 .map_err(|e| Error::Internal {
                     message: format!("{:?}", e),
                 })?
-                .ok_or(Error::FileNotFound)?,
+                .ok_or(Error::FileNotFound {
+                    path: value,
+                })?,
             Err(e) => {
                 return Err(Error::Internal {
                     message: format!("{:?}", e),

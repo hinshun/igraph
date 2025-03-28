@@ -30,21 +30,25 @@ pub fn load_gn_targets(
 ) -> Result<Vec<GnTarget>, Error> {
     // TODO: GN PATH?
     let mut command = Command::new("/usr/bin/gn");
-    let source_root = canonicalize_cached(source_root)
+    let source_root = canonicalize_cached(source_root.clone())
         .map_err(|e| Error::Internal {
             message: format!("Canonical path: {:?}", e),
         })?
-        .ok_or(Error::FileNotFound)?;
+        .ok_or(Error::FileNotFound {
+            path: source_root,
+        })?;
 
     command.arg("desc");
     command.arg("--format=json");
     command.arg(format!("--root={}", source_root.to_string_lossy()));
     command.arg(
-        canonicalize_cached(gn_dir)
+        canonicalize_cached(gn_dir.clone())
             .map_err(|e| Error::Internal {
                 message: format!("Canonical path: {:?}", e),
             })?
-            .ok_or(Error::FileNotFound)?,
+            .ok_or(Error::FileNotFound {
+                path: gn_dir,
+            })?,
     );
     command.arg(target);
     command.arg("sources");

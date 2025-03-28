@@ -46,12 +46,14 @@ impl TryFrom<CompileCommandsEntry> for SourceFileEntry {
             source_file
         };
 
-        let file_path = canonicalize_cached(file_path)
+        let file_path = canonicalize_cached(file_path.clone())
             .map_err(|source| Error::IOError {
                 source,
                 message: "canonicalize",
             })?
-            .ok_or(Error::FileNotFound)?;
+            .ok_or(Error::FileNotFound {
+                path: file_path,
+            })?;
 
         let args = value
             .arguments
